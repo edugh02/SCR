@@ -12,26 +12,26 @@ fig_vfh=figure; title('VFH')
 VFH=controllerVFH;
 %y ajustamos sus propiedades
 %%%%%%%%%%%%%%%%%%%%%%%%%%
-% VFH.NumAngularSectors=180;
-% VFH.DistanceLimits=[0.05 2];
-% VFH.RobotRadius=0.1;
-% VFH.SafetyDistance=0.1;
-% VFH.MinTurningRadius=0.1;
-% VFH.TargetDirectionWeight=5;
-% VFH.CurrentDirectionWeight=2;
-% VFH.PreviousDirectionWeight=2;
-% VFH.HistogramThresholds=[3 10];
+VFH.NumAngularSectors=180;
+VFH.DistanceLimits=[0.05 2];
+VFH.RobotRadius=0.1;
+VFH.SafetyDistance=0.1;
+VFH.MinTurningRadius=0.1;
+VFH.TargetDirectionWeight=5;
+VFH.CurrentDirectionWeight=2;
+VFH.PreviousDirectionWeight=2;
+VFH.HistogramThresholds=[3 10];
 VFH.UseLidarScan=true; %para permitir utilizar la notación del scan
 
 %Rellenamos los campos por defecto de la velocidad del robot, para que la lineal
 %sea siempre 0.1 m/
 
-msg_vel.Linear.X = 0.1;	%Indicamos que la velocidad lineal en el eje X sea 0.1
-msg_vel.Linear.Y = 0;
-msg_vel.Linear.Z = 0;
-msg_vel.Angular.X = 0;
-msg_vel.Angular.Y = 0;
-msg_vel.Angular.Z = 0;
+msg_vel.Linear.X=0.1;	%Indicamos que la velocidad lineal en el eje X sea 0.1
+msg_vel.Linear.Y=0;
+msg_vel.Linear.Z=0;
+msg_vel.Angular.X=0;
+msg_vel.Angular.Y=0;
+msg_vel.Angular.Z=0;
 
 %Bucle de control infinito
 while(1)
@@ -40,14 +40,15 @@ while(1)
  figure(fig_laser)
  leer_sensores;
   
+
  %Llamar al objeto VFH para obtener la dirección a seguir por el robot para
  %evitar los obstáculos. Mostrar los resultados del algoritmo (histogramas)
  %en la figura mfig_vfh’
- scans=lidarScan(msg_laser);
+ msg = msg_laser.la
+ scans=lidarScan(msg_laser.Latest);
  steeringDir = VFH(scans,0)
  figure(fig_vfh);
  show(VFH)
- 
  %Rellenar el campo de la velocidad angular del mensaje de velocidad con un
  %valor proporcional a la dirección anterior (K=0.1)
  msg_vel.Angular.Z=0.1*steeringDir;
