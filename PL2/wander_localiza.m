@@ -9,6 +9,8 @@ show(map);
 %Inicializar el localizador AMCL (práctica 1)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+
+
 odometryModel = odometryMotionModel;
 odometryModel.Noise = [0.2 0.2 0.2 0.2];
 
@@ -47,6 +49,20 @@ amcl.InitialPose = [0 0 0];              % Initial pose of vehicle
 amcl.InitialCovariance = diag([1 1 1])*0.5; % Covariance of initial pose %eye(3)*0.5;
 
 visualizationHelper = ExampleHelperAMCLVisualization(map);
+
+fig_laser=figure; title('LASER')
+fig_vfh=figure; title('VFH')
+
+VFH=controllerVFH;
+
+VFH.UseLidarScan=true;
+
+msg_vel.Linear.X = 0.1;	%Indicamos que la velocidad lineal en el eje X sea 0.1
+msg_vel.Linear.Y = 0;
+msg_vel.Linear.Z = 0;
+msg_vel.Angular.X = 0;
+msg_vel.Angular.Y = 0;
+msg_vel.Angular.Z = 0;
 
 %Rellenamos los campos por defecto de la velocidad del robot, para que la lineal
 %sea siempre 0.1 m/s
@@ -91,7 +107,7 @@ while(1)
  if (estimatedCovariance(1,1)<umbralx && estimatedCovariance(2,2)<umbraly && estimatedCovariance(3,3)<umbralyaw)
     disp('Robot Localizado');
  break;
-end
+ end
  %Dibujar los resultados del localizador con el visualizationHelper
  %Llamar al objeto VFH para obtener la dirección a seguir por el robot para
  %evitar los obstáculos. Mostrar los resultados del algoritmo (histogramas)
