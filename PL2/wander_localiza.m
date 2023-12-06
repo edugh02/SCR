@@ -108,15 +108,25 @@ while(1)
     disp('Robot Localizado');
  break;
  end
- %Dibujar los resultados del localizador con el visualizationHelper
+ 
+figure(fig_laser)
+ leer_sensores;
+  
  %Llamar al objeto VFH para obtener la dirección a seguir por el robot para
  %evitar los obstáculos. Mostrar los resultados del algoritmo (histogramas)
- %en la figura ‘fig_vfh’
-
+ %en la figura mfig_vfh’
+ scans=lidarScan(msg_laser);
+ steeringDir = VFH(scans,0)
+ figure(fig_vfh);
+ show(VFH)
+ 
  %Rellenar el campo de la velocidad angular del mensaje de velocidad con un
  %valor proporcional a la dirección anterior (K=0.1)
-
+ msg_vel.Angular.Z=0.1*steeringDir;
  %Publicar el mensaje de velocidad
+ send(pub_vel,msg_vel);
+ %Esperar al siguiente periodo de muestreo
+ waitfor(r);
 
  %Esperar al siguiente periodo de muestreo
 end
