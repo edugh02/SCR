@@ -48,7 +48,7 @@
 % or real. Refer to <docid:robotics_examples.example-MappingWithKnownPosesExample 
 % Mapping With Known Poses> for a more detailed explanation.
 
-load OnlineSLAM_mapa.mat 
+load OnlineSLAM_mapa_simpleRooms.mat 
 show(map);
 %% Setup the laser sensor model and amigobot motion model
 % AmigoBot can be modeled as a differential drive robot and its motion can be 

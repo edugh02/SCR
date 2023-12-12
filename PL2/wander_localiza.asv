@@ -102,10 +102,7 @@ while(1)
  %facilitar la búsqueda de un umbral)
  %Si la covarianza está por debajo de un umbral, el robot está localizado y
  %finaliza el programa
- umbralx = 0.1;   
- umbraly = 0.1;   
- umbralyaw = 0.1;
-
+ 
  if (estimatedCovariance(1,1)<umbralx && estimatedCovariance(2,2)<umbraly && estimatedCovariance(3,3)<umbralyaw)
     disp('Robot Localizado');
  break;
@@ -124,7 +121,7 @@ while(1)
  
  %Rellenar el campo de la velocidad angular del mensaje de velocidad con un
  %valor proporcional a la dirección anterior (K=0.1)
- msg_vel.Angular.Z=0.2*steeringDir;
+ msg_vel.Angular.Z=0.1*steeringDir;
  %Publicar el mensaje de velocidad
  send(pub_vel,msg_vel);
  %Esperar al siguiente periodo de muestreo

@@ -50,7 +50,7 @@ while(1)
  
  %Rellenar el campo de la velocidad angular del mensaje de velocidad con un
  %valor proporcional a la dirección anterior (K=0.1)
- msg_vel.Angular.Z=0.1*steeringDir;
+ msg_vel.Angular.Z=0.2*steeringDir;
  %Publicar el mensaje de velocidad
  send(pub_vel,msg_vel);
  %Esperar al siguiente periodo de muestreo
