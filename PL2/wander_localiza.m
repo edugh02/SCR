@@ -42,7 +42,7 @@ amcl.UpdateThresholds = [0.2,0.2,0.2];
 amcl.ResamplingInterval = 1;
 
 amcl.ParticleLimits = [500 50000];           % Minimum and maximum number of particles
-amcl.GlobalLocalization = true;      % global = true      local=false
+amcl.GlobalLocalization = false;      % global = true      local=false
 amcl.InitialPose = [0 0 0];              % Initial pose of vehicle   
 amcl.InitialCovariance = diag([1 1 1])*0.5; % Covariance of initial pose %eye(3)*0.5;
 
@@ -124,7 +124,7 @@ while(1)
  
  %Rellenar el campo de la velocidad angular del mensaje de velocidad con un
  %valor proporcional a la dirección anterior (K=0.1)
- msg_vel.Angular.Z=0.2*steeringDir;
+ msg_vel.Angular.Z=0.3*steeringDir;
  %Publicar el mensaje de velocidad
  send(pub_vel,msg_vel);
  %Esperar al siguiente periodo de muestreo
