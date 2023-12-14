@@ -1,3 +1,6 @@
+clear all;
+close all;
+
 %Iniciamos el simulador suscribiéndonos a los topics que necesitamos para
 %llevar a cabo la ejecución del robot
 

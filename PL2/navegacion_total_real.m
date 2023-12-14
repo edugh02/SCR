@@ -22,8 +22,8 @@ rangeFinderModel.Map = map;
 
 tftree = rostf;
 %Obtener transformada entre los frames del robot y del sensor_laser
-waitForTransform(tftree,'/robot0','/robot0_laser_1');
-sensorTransform = getTransform(tftree,'/robot0','/robot0_laser_1');
+waitForTransform(tftree,'/base_link','/laser_frame');
+sensorTransform = getTransform(tftree,'/base_link','/laser_frame');
 
 % Get the euler rotation angles.
 laserQuat = [sensorTransform.Transform.Rotation.W sensorTransform.Transform.Rotation.X ...
@@ -56,6 +56,7 @@ fig_laser=figure; title('LASER')
 fig_vfh=figure; title('VFH')
 
 VFH=controllerVFH;
+VFH.SafetyDistance=0.5;
 
 VFH.UseLidarScan=true;
 
@@ -69,7 +70,7 @@ msg_vel.Angular.Z = 0;
 %Crear el objeto PurePursuit y ajustar sus propiedades
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 controller=controllerPurePursuit;
-controller.LookaheadDistance = 0.5;
+controller.LookaheadDistance = 2;
 controller.DesiredLinearVelocity= 0.1;
 controller.MaxAngularVelocity = 0.5;
 
@@ -93,14 +94,27 @@ while(1)
     
     [isUpdated,estimatedPose, estimatedCovariance] = amcl(pose, scans);
     
+    % Drive robot to next pose.
+    %wander(wanderHelper);
+    
     % Plot the robot's estimated pose, particles and laser scans on the map.
     if isUpdated
         i = i + 1
         plotStep(visualizationHelper, amcl, estimatedPose, scans, i)
     end
+    
+ %Leer y dibujar los datos del láser en la figura ‘fig_laser’
 
+ %Leer la odometría
+
+
+ %Obtener la posición pose=[x,y,yaw] a partir de la odometría anterior
+ %Ejecutar amcl para obtener la posición estimada estimatedPose y la
+ %covarianza estimatedCovariance (mostrar la última por pantalla para
+ %facilitar la búsqueda de un umbral)
  %Si la covarianza está por debajo de un umbral, el robot está localizado y
  %finaliza el programa
+
  if (estimatedCovariance(1,1)<0.01 && estimatedCovariance(2,2)<0.01 && estimatedCovariance(3,3)<0.01)
     disp('Robot Localizado');
     msg_vel.Linear.X = 0;	
@@ -116,7 +130,7 @@ while(1)
  %evitar los obstáculos. Mostrar los resultados del algoritmo (histogramas)
  %en la figura mfig_vfh’
  scans=lidarScan(msg_laser);
- steeringDir = VFH(scans,0)
+ steeringDir = VFH(scans,0)*4;
  figure(fig_vfh);
  show(VFH)
  
@@ -136,14 +150,14 @@ end
 %Paramos el robot, para que no avance mientras planificamos
 %Hacemos una copia del mapa, para “inflarlo” antes de planificar
 cpMap= copy(map);
-inflate(cpMap,0.25);
+inflate(cpMap,0.5);
 
 %Crear el objeto PRM y ajustar sus parámetros
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 planner = mobileRobotPRM;
 planner.Map = cpMap;
-planner.NumNodes = 100;
-planner.ConnectionDistance = 12;
+planner.NumNodes = 2000;
+planner.ConnectionDistance = 1;
 
 %Obtener la ruta hacia el destino desde la posición actual del robot y mostrarla
 %en una figura
@@ -185,9 +199,9 @@ while(1)
 
     %Llamar a VFH pasándole como “targetDir” un valor proporcional a la
     %velocidad angular calculada por el PurePursuit
-    targetdir = 0.5*ang_vel;
+    targetdir = ang_vel;
     direccion = VFH(scans,targetdir);
-    ang_vel_vfh = 0.5*direccion;
+    ang_vel_vfh = 0.8*direccion;
 
     %Calcular la velocidad angular final como una combinación lineal de la
     %generada por el controlador PurePursuit y la generada por VFH
@@ -200,7 +214,7 @@ while(1)
     %Comprobar si hemos llegado al destino, calculando la distancia euclidea
     %y estableciendo un umbral
     destino_alcanzado = sqrt((estimatedPose(1)-endLocation(1))^2+(estimatedPose(2)-endLocation(2))^2)
-    if (destino_alcanzado<0.1)
+    if (destino_alcanzado<0.2)
         disp('Localización alcanzda');
         msg_vel.Linear.X = 0;	
         msg_vel.Angular.Z = 0;
