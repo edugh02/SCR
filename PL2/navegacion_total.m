@@ -124,7 +124,7 @@ while(1)
  end
  
  figure(fig_laser)
- leer_sensores;
+ %leer_sensores;
   
  %Llamar al objeto VFH para obtener la dirección a seguir por el robot para
  %evitar los obstáculos. Mostrar los resultados del algoritmo (histogramas)
@@ -214,7 +214,7 @@ while(1)
     %Comprobar si hemos llegado al destino, calculando la distancia euclidea
     %y estableciendo un umbral
     destino_alcanzado = sqrt((estimatedPose(1)-endLocation(1))^2+(estimatedPose(2)-endLocation(2))^2)
-    if (destino_alcanzado<0.2)
+    if (destino_alcanzado<0.25)
         disp('Localización alcanzda');
         msg_vel.Linear.X = 0;	
         msg_vel.Angular.Z = 0;

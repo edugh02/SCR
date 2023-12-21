@@ -1,6 +1,6 @@
 %Definir la posicion de destino
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-endLocation = [14 -5];
+endLocation = [14 2];
 
 %Cargar el mapa
 %%%%%%%%%%%%%%%
@@ -46,7 +46,7 @@ amcl.UpdateThresholds = [0.2,0.2,0.2];
 amcl.ResamplingInterval = 1;
 
 amcl.ParticleLimits = [500 50000];           % Minimum and maximum number of particles
-amcl.GlobalLocalization = false;      % global = true      local=false
+amcl.GlobalLocalization = true;      % global = true      local=false
 amcl.InitialPose = [0 0 0];              % Initial pose of vehicle   
 amcl.InitialCovariance = diag([1 1 1])*0.5; % Covariance of initial pose %eye(3)*0.5;
 
@@ -150,7 +150,7 @@ end
 %Paramos el robot, para que no avance mientras planificamos
 %Hacemos una copia del mapa, para “inflarlo” antes de planificar
 cpMap= copy(map);
-inflate(cpMap,0.5);
+inflate(cpMap,0.35);
 
 %Crear el objeto PRM y ajustar sus parámetros
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -214,7 +214,7 @@ while(1)
     %Comprobar si hemos llegado al destino, calculando la distancia euclidea
     %y estableciendo un umbral
     destino_alcanzado = sqrt((estimatedPose(1)-endLocation(1))^2+(estimatedPose(2)-endLocation(2))^2)
-    if (destino_alcanzado<0.2)
+    if (destino_alcanzado<0.25)
         disp('Localización alcanzda');
         msg_vel.Linear.X = 0;	
         msg_vel.Angular.Z = 0;
