@@ -1,1 +1,1 @@
-rosinit('http://172.29.30.178:11311', 'Nodehost', '172.29.29.53');
+rosinit('http://yyy.yyy.yyy.yyy:11311', 'Nodehost', 'xxx.xxx.xxx.xxx'); %yyy.yyy.yyy.yyy ip de la máquina que tenga ros/xxx.xxx.xxx.xxx ip de nuestra máquina
